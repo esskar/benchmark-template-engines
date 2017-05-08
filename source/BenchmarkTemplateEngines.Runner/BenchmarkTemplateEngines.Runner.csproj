@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Handlebars.Core" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BenchmarkTemplateEngines.Contracts\BenchmarkTemplateEngines.Contracts.csproj" />
     <ProjectReference Include="..\Engines\BenchmarkTemplateEngines.Engines.HandlebarsCore\BenchmarkTemplateEngines.Engines.HandlebarsCore.csproj" />
     <ProjectReference Include="..\Engines\BenchmarkTemplateEngines.Engines.HandlebarsDotNet\BenchmarkTemplateEngines.Engines.HandlebarsDotNet.csproj" />

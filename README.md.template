@@ -1,0 +1,20 @@
+# benchmark-template-engines
+Trying to benchmark different .NET based template engines.
+
+## Engines
+Here is a complete list of all engines that are currently benchmarked
+
+{{#each engines}}
+* [{{Name}}]({{Url}})
+{{/each}}
+
+## Results
+All benchmark tests are automated and based on {{iterations}} iterations.
+
+#### In detail
+{{#each benchmarks}}
+
+##### {{name}}
+{{tableHeader ../benchmarkNamesColumnNames}}{{#each rows}}{{tableRow .}}{{/each}}
+{{/each}}
+

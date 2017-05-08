@@ -1,5 +1,4 @@
-﻿using System;
-using BenchmarkTemplateEngines.Contracts;
+﻿using BenchmarkTemplateEngines.Contracts;
 using Handlebars.Core;
 
 namespace BenchmarkTemplateEngines.Engines.HandlebarsCore
@@ -20,7 +19,9 @@ namespace BenchmarkTemplateEngines.Engines.HandlebarsCore
 
         public bool CanCompile => true;
 
-        public string Name => "HandlebarsDotNet";
+        public string Name => "Handlebars.Core";
+
+        public string Url => "https://github.com/esskar/handlebars-core";
 
         public object Compile(string template)
         {

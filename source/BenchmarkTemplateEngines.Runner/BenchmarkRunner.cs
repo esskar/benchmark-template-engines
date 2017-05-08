@@ -7,13 +7,16 @@ namespace BenchmarkTemplateEngines.Runner
 {
     public class BenchmarkRunner
     {
-        public void Run(long iterations)
+        public Dictionary<ITemplateEngine, IList<BenchmarkResult>> Run(long iterations)
         {
+            var results = new Dictionary<ITemplateEngine, IList<BenchmarkResult>>();
             var templateEngineProvider = new TemplateEngineProvider();
             foreach (var templateEngine in templateEngineProvider.GetTemplateEngines())
             {
-                var results = Benchmark(templateEngine, iterations);
+                var engineResults = Benchmark(templateEngine, iterations);
+                results.Add(templateEngine, engineResults);
             }
+            return results;
         }
 
         public IList<BenchmarkResult> Benchmark(ITemplateEngine templateEngine, long iterations)
@@ -35,40 +38,43 @@ namespace BenchmarkTemplateEngines.Runner
         {
             var result = new List<BenchmarkResult>
             {
-                BenchmarkCompile(templateEngine, templateData, iterations, name),
                 BenchmarkRender(templateEngine, templateData, data, iterations, name),
+                BenchmarkCompile(templateEngine, templateData, iterations, name),
                 BenchmarkRenderCompile(templateEngine, templateData, data, iterations, name)
             };
             return result;
         }
 
-        private static BenchmarkResult BenchmarkCompile(ITemplateEngine templateEngine, string templateData, long iterations, string name)
+        private static BenchmarkResult BenchmarkRender(ITemplateEngine templateEngine, string templateData, object data, long iterations, string section)
         {
             var result = new BenchmarkResult
             {
-                Name = string.Format("{0}: Compile", name),
-                IsSupported = templateEngine.CanCompile
-            };
-            BenchmarkAction(result, iterations, () => templateEngine.Compile(templateData), templateEngine.Name);
-            return result;
-        }
-
-        private static BenchmarkResult BenchmarkRender(ITemplateEngine templateEngine, string templateData, object data, long iterations, string name)
-        {
-            var result = new BenchmarkResult
-            {
-                Name = string.Format("{0}: Render", name),
+                Section = section,
+                Name = "Render",
                 IsSupported = true
             };
             BenchmarkAction(result, iterations, () => templateEngine.Render(templateData, data), templateEngine.Name);
             return result;
         }
 
-        private static BenchmarkResult BenchmarkRenderCompile(ITemplateEngine templateEngine, string templateData, object data, long iterations, string name)
+        private static BenchmarkResult BenchmarkCompile(ITemplateEngine templateEngine, string templateData, long iterations, string section)
         {
             var result = new BenchmarkResult
             {
-                Name = string.Format("{0}: Compile&Render", name),
+                Section = section,
+                Name = "Compile",
+                IsSupported = templateEngine.CanCompile
+            };
+            BenchmarkAction(result, iterations, () => templateEngine.Compile(templateData), templateEngine.Name);
+            return result;
+        }
+
+        private static BenchmarkResult BenchmarkRenderCompile(ITemplateEngine templateEngine, string templateData, object data, long iterations, string section)
+        {
+            var result = new BenchmarkResult
+            {
+                Section = section,
+                Name = "Compile&Render",
                 IsSupported = templateEngine.CanCompile
             };
             if (templateEngine.CanCompile)
@@ -99,11 +105,11 @@ namespace BenchmarkTemplateEngines.Runner
                     }
                     sw.Stop();
 
-                    result.Elapsed = sw.Elapsed;
-                    result.IsCompletedSuccessfully = true;
                     double elapsedMilliseconds = sw.ElapsedMilliseconds;
+                    result.Elapsed = elapsedMilliseconds / iterations;
+                    result.IsCompletedSuccessfully = true;
                     Console.WriteLine("{0}: Completed '{1}' in {2}ms",
-                        templateEngineName, result.Name, elapsedMilliseconds / iterations);
+                        templateEngineName, result.Name, result.Elapsed.Value);
                 }
                 catch (Exception e)
                 {

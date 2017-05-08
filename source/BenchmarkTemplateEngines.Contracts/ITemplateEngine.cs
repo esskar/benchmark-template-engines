@@ -6,6 +6,8 @@
 
         string Name { get; }
 
+        string Url { get; }
+
         ITemplateDataProvider GetDataProvider();
 
         object Compile(string template);

@@ -4,6 +4,8 @@ namespace BenchmarkTemplateEngines.Runner
 {
     public class BenchmarkResult
     {
+        public string Section { get; set; }
+
         public string Name { get; set; }
 
         public long Iterations { get; set; }
@@ -14,6 +16,6 @@ namespace BenchmarkTemplateEngines.Runner
 
         public Exception Exception { get; set; }
 
-        public TimeSpan? Elapsed { get; set; }
+        public double? Elapsed { get; set; }
     }
 }

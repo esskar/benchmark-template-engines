@@ -1,13 +1,15 @@
-﻿using System;
-
-namespace BenchmarkTemplateEngines.Runner
+﻿namespace BenchmarkTemplateEngines.Runner
 {
-    class Program
+    public static class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             var runner = new BenchmarkRunner();
-            runner.Run(25000);
+            var results = runner.Run(25000);
+
+            var renderer = new BenchmarkResultRenderer();
+            renderer.RenderToReadme(results);
+
         }
     }
 }
