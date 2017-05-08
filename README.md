@@ -16,16 +16,16 @@ All benchmark tests are automated.
 ##### HelloWorld
 Engine|Render|Iterations|Compile|Iterations|Compile&Render|Iterations
 ------|------|----------|-------|----------|--------------|----------
-Handlebars.Core|0.48472ms|25000|0.48280ms|25000|0.00020ms|25000
-HandlebarsDotNet|0.52556ms|25000|0.49544ms|25000|0.00016ms|25000
-RazorLight|65.00000ms|1|11.00000ms|1|0.00000ms|1
+Handlebars.Core|0.52248ms|25000|0.51292ms|25000|0.00020ms|25000
+HandlebarsDotNet|0.55260ms|25000|0.53148ms|25000|0.00016ms|25000
+RazorLight|9.02100ms|1000|7.86500ms|1000|0.01300ms|1000
 
 
 ##### HelloWorld with Data
 Engine|Render|Iterations|Compile|Iterations|Compile&Render|Iterations
 ------|------|----------|-------|----------|--------------|----------
-Handlebars.Core|0.92380ms|25000|1.04944ms|25000|0.00336ms|25000
-HandlebarsDotNet|0.75436ms|25000|0.74068ms|25000|0.00204ms|25000
-RazorLight|225.00000ms|1|12.00000ms|1|9.00000ms|1
+Handlebars.Core|0.76248ms|25000|0.75024ms|25000|0.00232ms|25000
+HandlebarsDotNet|0.80836ms|25000|0.78236ms|25000|0.00220ms|25000
+RazorLight|33.50800ms|1000|8.10700ms|1000|0.06400ms|1000
 
 

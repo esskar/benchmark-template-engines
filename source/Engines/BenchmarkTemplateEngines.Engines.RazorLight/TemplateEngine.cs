@@ -13,7 +13,7 @@ namespace BenchmarkTemplateEngines.Engines.RazorLight
         public TemplateEngine()
         {
             _engines = new Dictionary<object, IRazorLightEngine>();
-            this.Init();
+            Init();
         }
 
         public ITemplateDataProvider GetDataProvider()
@@ -23,7 +23,7 @@ namespace BenchmarkTemplateEngines.Engines.RazorLight
 
         public bool CanCompile => true;
 
-        public long? Iterations => 1;
+        public long? Iterations => 1000;
 
         public string Name => "RazorLight";
 
