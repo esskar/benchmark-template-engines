@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using BenchmarkTemplateEngines.Contracts;
 using Handlebars.Core;
+using RazorLight.Extensions;
 
 namespace BenchmarkTemplateEngines.Runner
 {
@@ -72,7 +73,9 @@ namespace BenchmarkTemplateEngines.Runner
                 {"engines", engines}
             };
 
-            var benchmarks = new List<Dictionary<string, object>>();
+            var resultsAvg = new Dictionary<string, Dictionary<string, BenchmarkResult>>();
+           
+            var benchmarksAll = new List<Dictionary<string, object>>();
             foreach (var sectionName in sectionNames)
             {
                 var section = new Dictionary<string, object>
@@ -84,12 +87,26 @@ namespace BenchmarkTemplateEngines.Runner
                 var rows = new List<List<string>>();
                 foreach (var templateEngine in engines)
                 {
-                    var columns = new List<string> { templateEngine.Name };
+                    var engineName = templateEngine.Name;
+                    var columns = new List<string> { engineName };
                     var rowResults = results[templateEngine]
                         .Where(r => r.Section == sectionName)
                         .ToDictionary(r => r.Name);
+
+                    if (!resultsAvg.TryGetValue(engineName, out Dictionary<string, BenchmarkResult> avgEngineResults))
+                    {
+                        avgEngineResults = new Dictionary<string, BenchmarkResult>();
+                        resultsAvg.Add(engineName, avgEngineResults);
+                    }
+                    
                     foreach (var benchmarkName in benchmarkNames)
                     {
+                        if (!avgEngineResults.TryGetValue(benchmarkName, out BenchmarkResult avg))
+                        {
+                            avg = new BenchmarkResult();
+                            avgEngineResults.Add(benchmarkName, avg);
+                        }
+
                         var r = rowResults[benchmarkName];
                         if (r.IsSupported)
                         {
@@ -99,6 +116,10 @@ namespace BenchmarkTemplateEngines.Runner
                                     "{0:N5}ms", r.Elapsed.Value);
                                 columns.Add(elapsed);
                                 columns.Add(r.Iterations.ToString(CultureInfo.InvariantCulture));
+
+                                avg.IsSupported = true;
+                                avg.Elapsed = avg.Elapsed != null ? avg.Elapsed.Value + r.Elapsed.Value : r.Elapsed;
+                                avg.Iterations += r.Iterations;
                             }
                             else if (r.Exception != null)
                             {
@@ -121,9 +142,47 @@ namespace BenchmarkTemplateEngines.Runner
                 }
                 section.Add("rows", rows);
 
-                benchmarks.Add(section);
+                benchmarksAll.Add(section);
             }
-            data.Add("benchmarks", benchmarks);
+            data.Add("benchmarksAll", benchmarksAll);
+
+            var rowsAvg = new List<List<string>>();
+            var benchmarksAvg = new Dictionary<string, object>
+            {
+                {"columnNames", benchmarkNamesColumnNames},
+                {"rows", rowsAvg}
+            };
+            foreach (var templateEngine in engines)
+            {
+                var columns = new List<string> {templateEngine.Name};
+                foreach (var benchmarkName in benchmarkNames)
+                {
+                    var r = resultsAvg[templateEngine.Name][benchmarkName];
+                    if (r.IsSupported)
+                    {
+                        if (r.Elapsed != null)
+                        {
+                            var elapsed = string.Format(CultureInfo.InvariantCulture,
+                                "{0:N5}ms", r.Elapsed.Value / sectionNames.Count);
+                            columns.Add(elapsed);
+                            columns.Add((r.Iterations / sectionNames.Count).ToString(CultureInfo.InvariantCulture));
+                        }
+                        else
+                        {
+                            columns.Add("---");
+                            columns.Add("---");
+                        }
+                    }
+                    else
+                    {
+                        columns.Add("---");
+                        columns.Add("---");
+                    }
+                }
+                rowsAvg.Add(columns);
+            }
+            data.Add("benchmarksAvg", benchmarksAvg);
+
             var result = template.Render(data);
             return result;
         }
