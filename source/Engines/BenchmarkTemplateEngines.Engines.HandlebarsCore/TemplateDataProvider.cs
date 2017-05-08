@@ -4,9 +4,14 @@ namespace BenchmarkTemplateEngines.Engines.HandlebarsCore
 {
     public class TemplateDataProvider : ITemplateDataProvider
     {
-        public string GetHelloWorldData()
+        public string GetHelloWorldTemplateData()
         {
             return "Hello World!";
+        }
+
+        public string GetHelloWorldWithDataTemplateData()
+        {
+            return "Hello {{world}}!";
         }
     }
 }

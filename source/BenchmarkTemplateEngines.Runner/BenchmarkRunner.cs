@@ -23,14 +23,26 @@ namespace BenchmarkTemplateEngines.Runner
         {
             var result = new List<BenchmarkResult>();
             result.AddRange(BenchmarkHelloWorld(templateEngine, iterations));
+            result.AddRange(BenchmarkHelloWorldWithData(templateEngine, iterations));
             return result;
         }
 
         public IList<BenchmarkResult> BenchmarkHelloWorld(ITemplateEngine templateEngine, long iterations)
         {
             var dataProvider = templateEngine.GetDataProvider();
-            var templateData = dataProvider.GetHelloWorldData();
+            var templateData = dataProvider.GetHelloWorldTemplateData();
             return BenchmarkAll(templateEngine, templateData, null, iterations, "HelloWorld");
+        }
+
+        public IList<BenchmarkResult> BenchmarkHelloWorldWithData(ITemplateEngine templateEngine, long iterations)
+        {
+            var dataProvider = templateEngine.GetDataProvider();
+            var templateData = dataProvider.GetHelloWorldWithDataTemplateData();
+            var data = new Dictionary<string, string>
+            {
+                {"world", "World"}
+            };
+            return BenchmarkAll(templateEngine, templateData, data, iterations, "HelloWorld with Data");
         }
 
         private static IList<BenchmarkResult> BenchmarkAll(ITemplateEngine templateEngine, string templateData,
@@ -94,8 +106,8 @@ namespace BenchmarkTemplateEngines.Runner
             if (result.IsSupported)
             {
                 result.Iterations = iterations;
-                Console.WriteLine("{0}: Starting benchmark '{1}' with {2} iterations ...",
-                    templateEngineName, result.Name, iterations);
+                Console.WriteLine("{0}: Starting benchmark '{1}:{2}' with {3} iterations ...",
+                    templateEngineName, result.Section, result.Name, iterations);
                 try
                 {
                     var sw = Stopwatch.StartNew();
@@ -108,15 +120,15 @@ namespace BenchmarkTemplateEngines.Runner
                     double elapsedMilliseconds = sw.ElapsedMilliseconds;
                     result.Elapsed = elapsedMilliseconds / iterations;
                     result.IsCompletedSuccessfully = true;
-                    Console.WriteLine("{0}: Completed '{1}' in {2}ms",
-                        templateEngineName, result.Name, result.Elapsed.Value);
+                    Console.WriteLine("{0}: Completed '{1}:{2}' in {3}ms",
+                        templateEngineName, result.Section, result.Name, result.Elapsed.Value);
                 }
                 catch (Exception e)
                 {
                     result.IsCompletedSuccessfully = false;
                     result.Exception = e;
-                    Console.WriteLine("{0}: Failed to benchmark '{1}': {2}",
-                       templateEngineName, result.Name, e.Message);
+                    Console.WriteLine("{0}: Failed to benchmark '{1}:{2}': {3}",
+                       templateEngineName, result.Section, result.Name, e.Message);
                 }
             }
             else

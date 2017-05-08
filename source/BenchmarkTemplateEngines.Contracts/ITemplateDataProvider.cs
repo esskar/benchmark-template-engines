@@ -1,9 +1,9 @@
-﻿using System;
-
-namespace BenchmarkTemplateEngines.Contracts
+﻿namespace BenchmarkTemplateEngines.Contracts
 {
     public interface ITemplateDataProvider
     {
-        string GetHelloWorldData();
+        string GetHelloWorldTemplateData();
+
+        string GetHelloWorldWithDataTemplateData();
     }
 }

@@ -63,7 +63,7 @@ namespace BenchmarkTemplateEngines.Runner
             var iterations = allResults[0].Iterations;
 
             var benchmarkNamesColumnNames = new List<string>(benchmarkNames);
-            benchmarkNamesColumnNames.Insert(0, "");
+            benchmarkNamesColumnNames.Insert(0, "Engine");
             var data = new Dictionary<string, object>
             {
                 {"engines", engines},

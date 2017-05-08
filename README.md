@@ -13,9 +13,16 @@ All benchmark tests are automated and based on 25000 iterations.
 #### In detail
 
 ##### HelloWorld
-|Render|Compile|Compile&Render
-|------|-------|--------------
-Handlebars.Core|0.51892ms|0.51428ms|0.00016ms
-HandlebarsDotNet|0.55304ms|0.54248ms|0.00016ms
+Engine|Render|Compile|Compile&Render
+------|------|-------|--------------
+Handlebars.Core|0.5232ms|0.5196ms|0.00016ms
+HandlebarsDotNet|0.56264ms|0.53708ms|0.00016ms
+
+
+##### HelloWorld with Data
+Engine|Render|Compile|Compile&Render
+------|------|-------|--------------
+Handlebars.Core|0.78044ms|0.76492ms|0.00228ms
+HandlebarsDotNet|0.81152ms|0.77364ms|0.00232ms
 
 
