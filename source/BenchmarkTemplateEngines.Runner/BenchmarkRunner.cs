@@ -13,7 +13,7 @@ namespace BenchmarkTemplateEngines.Runner
             var templateEngineProvider = new TemplateEngineProvider();
             foreach (var templateEngine in templateEngineProvider.GetTemplateEngines())
             {
-                var engineResults = Benchmark(templateEngine, iterations);
+                var engineResults = Benchmark(templateEngine, templateEngine.Iterations ?? iterations);
                 results.Add(templateEngine, engineResults);
             }
             return results;
@@ -31,16 +31,17 @@ namespace BenchmarkTemplateEngines.Runner
         {
             var dataProvider = templateEngine.GetDataProvider();
             var templateData = dataProvider.GetHelloWorldTemplateData();
-            return BenchmarkAll(templateEngine, templateData, null, iterations, "HelloWorld");
+            var data = new {};
+            return BenchmarkAll(templateEngine, templateData, data, iterations, "HelloWorld");
         }
 
         public IList<BenchmarkResult> BenchmarkHelloWorldWithData(ITemplateEngine templateEngine, long iterations)
         {
             var dataProvider = templateEngine.GetDataProvider();
             var templateData = dataProvider.GetHelloWorldWithDataTemplateData();
-            var data = new Dictionary<string, string>
+            var data = new
             {
-                {"world", "World"}
+                world = "World",
             };
             return BenchmarkAll(templateEngine, templateData, data, iterations, "HelloWorld with Data");
         }
@@ -51,7 +52,7 @@ namespace BenchmarkTemplateEngines.Runner
             var result = new List<BenchmarkResult>
             {
                 BenchmarkRender(templateEngine, templateData, data, iterations, name),
-                BenchmarkCompile(templateEngine, templateData, iterations, name),
+                BenchmarkCompile(templateEngine, templateData, data, iterations, name),
                 BenchmarkRenderCompile(templateEngine, templateData, data, iterations, name)
             };
             return result;
@@ -69,7 +70,7 @@ namespace BenchmarkTemplateEngines.Runner
             return result;
         }
 
-        private static BenchmarkResult BenchmarkCompile(ITemplateEngine templateEngine, string templateData, long iterations, string section)
+        private static BenchmarkResult BenchmarkCompile(ITemplateEngine templateEngine, string templateData, object data, long iterations, string section)
         {
             var result = new BenchmarkResult
             {
@@ -77,7 +78,7 @@ namespace BenchmarkTemplateEngines.Runner
                 Name = "Compile",
                 IsSupported = templateEngine.CanCompile
             };
-            BenchmarkAction(result, iterations, () => templateEngine.Compile(templateData), templateEngine.Name);
+            BenchmarkAction(result, iterations, () => templateEngine.Compile(templateData, data), templateEngine.Name);
             return result;
         }
 
@@ -91,7 +92,7 @@ namespace BenchmarkTemplateEngines.Runner
             };
             if (templateEngine.CanCompile)
             {
-                var compiledTemplate = templateEngine.Compile(templateData);
+                var compiledTemplate = templateEngine.Compile(templateData, data);
                 BenchmarkAction(result, iterations, () => templateEngine.Render(compiledTemplate, data), templateEngine.Name);
             }
             else
@@ -120,7 +121,7 @@ namespace BenchmarkTemplateEngines.Runner
                     double elapsedMilliseconds = sw.ElapsedMilliseconds;
                     result.Elapsed = elapsedMilliseconds / iterations;
                     result.IsCompletedSuccessfully = true;
-                    Console.WriteLine("{0}: Completed '{1}:{2}' in {3}ms",
+                    Console.WriteLine("{0}: Completed '{1}:{2}' in {3:N5}ms",
                         templateEngineName, result.Section, result.Name, result.Elapsed.Value);
                 }
                 catch (Exception e)
@@ -128,7 +129,7 @@ namespace BenchmarkTemplateEngines.Runner
                     result.IsCompletedSuccessfully = false;
                     result.Exception = e;
                     Console.WriteLine("{0}: Failed to benchmark '{1}:{2}': {3}",
-                       templateEngineName, result.Section, result.Name, e.Message);
+                       templateEngineName, result.Section, result.Name, e);
                 }
             }
             else

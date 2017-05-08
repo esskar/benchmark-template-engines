@@ -23,7 +23,9 @@ namespace BenchmarkTemplateEngines.Engines.HandlebarsCore
 
         public string Url => "https://github.com/esskar/handlebars-core";
 
-        public object Compile(string template)
+        public long? Iterations => null;
+
+        public object Compile(string template, object data)
         {
             return _engine.Compile(template);
         }

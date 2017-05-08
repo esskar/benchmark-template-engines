@@ -60,21 +60,26 @@ namespace BenchmarkTemplateEngines.Runner
             var allResults = results.Values.SelectMany(r => r).ToList();
             var sectionNames = allResults.Select(r => r.Section).Distinct().ToList();
             var benchmarkNames = allResults.Select(r => r.Name).Distinct().ToList();
-            var iterations = allResults[0].Iterations;
 
-            var benchmarkNamesColumnNames = new List<string>(benchmarkNames);
-            benchmarkNamesColumnNames.Insert(0, "Engine");
+            var benchmarkNamesColumnNames = new List<string> {"Engine"};
+            foreach (var benchmarkName in benchmarkNames)
+            {
+                benchmarkNamesColumnNames.Add(benchmarkName);
+                benchmarkNamesColumnNames.Add("Iterations");
+            }
             var data = new Dictionary<string, object>
             {
-                {"engines", engines},
-                {"benchmarkNamesColumnNames", benchmarkNamesColumnNames},
-                {"iterations", iterations}
+                {"engines", engines}
             };
 
             var benchmarks = new List<Dictionary<string, object>>();
             foreach (var sectionName in sectionNames)
             {
-                var section = new Dictionary<string, object> {{"name", sectionName}};
+                var section = new Dictionary<string, object>
+                {
+                    {"name", sectionName},
+                    {"columnNames", benchmarkNamesColumnNames}
+                };
 
                 var rows = new List<List<string>>();
                 foreach (var templateEngine in engines)
@@ -86,14 +91,29 @@ namespace BenchmarkTemplateEngines.Runner
                     foreach (var benchmarkName in benchmarkNames)
                     {
                         var r = rowResults[benchmarkName];
-                        if (r.IsSupported && r.Elapsed != null)
+                        if (r.IsSupported)
                         {
-                            var elapsed = string.Format(CultureInfo.InvariantCulture,
-                                "{0}ms", r.Elapsed.Value);
-                            columns.Add(elapsed);
+                            if (r.Elapsed != null)
+                            {
+                                var elapsed = string.Format(CultureInfo.InvariantCulture,
+                                    "{0:N5}ms", r.Elapsed.Value);
+                                columns.Add(elapsed);
+                                columns.Add(r.Iterations.ToString(CultureInfo.InvariantCulture));
+                            }
+                            else if (r.Exception != null)
+                            {
+                                columns.Add("FAILED");
+                                columns.Add("---");
+                            }
+                            else
+                            {
+                                columns.Add("---");
+                                columns.Add("---");
+                            }
                         }
                         else
                         {
+                            columns.Add("---");
                             columns.Add("---");
                         }
                     }

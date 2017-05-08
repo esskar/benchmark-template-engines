@@ -8,9 +8,11 @@
 
         string Url { get; }
 
+        long? Iterations { get; }
+
         ITemplateDataProvider GetDataProvider();
 
-        object Compile(string template);
+        object Compile(string template, object data);
 
         string Render(string template, object data);
 

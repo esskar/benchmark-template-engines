@@ -17,7 +17,9 @@ namespace BenchmarkTemplateEngines.Engines.HandlebarsDotNet
 
         public string Url => "https://github.com/rexm/Handlebars.Net";
 
-        public object Compile(string template)
+        public long? Iterations => null;
+
+        public object Compile(string template, object data)
         {
             return Handlebars.Compile(template);
         }

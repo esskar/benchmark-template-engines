@@ -9,12 +9,12 @@ Here is a complete list of all engines that are currently benchmarked
 {{/each}}
 
 ## Results
-All benchmark tests are automated and based on {{iterations}} iterations.
+All benchmark tests are automated.
 
 #### In detail
 {{#each benchmarks}}
 
 ##### {{name}}
-{{tableHeader ../benchmarkNamesColumnNames}}{{#each rows}}{{tableRow .}}{{/each}}
+{{tableHeader columnNames}}{{#each rows}}{{tableRow .}}{{/each}}
 {{/each}}
 

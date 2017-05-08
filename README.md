@@ -6,23 +6,26 @@ Here is a complete list of all engines that are currently benchmarked
 
 * [Handlebars.Core](https://github.com/esskar/handlebars-core)
 * [HandlebarsDotNet](https://github.com/rexm/Handlebars.Net)
+* [RazorLight](https://github.com/toddams/RazorLight)
 
 ## Results
-All benchmark tests are automated and based on 25000 iterations.
+All benchmark tests are automated.
 
 #### In detail
 
 ##### HelloWorld
-Engine|Render|Compile|Compile&Render
-------|------|-------|--------------
-Handlebars.Core|0.5232ms|0.5196ms|0.00016ms
-HandlebarsDotNet|0.56264ms|0.53708ms|0.00016ms
+Engine|Render|Iterations|Compile|Iterations|Compile&Render|Iterations
+------|------|----------|-------|----------|--------------|----------
+Handlebars.Core|0.48472ms|25000|0.48280ms|25000|0.00020ms|25000
+HandlebarsDotNet|0.52556ms|25000|0.49544ms|25000|0.00016ms|25000
+RazorLight|65.00000ms|1|11.00000ms|1|0.00000ms|1
 
 
 ##### HelloWorld with Data
-Engine|Render|Compile|Compile&Render
-------|------|-------|--------------
-Handlebars.Core|0.78044ms|0.76492ms|0.00228ms
-HandlebarsDotNet|0.81152ms|0.77364ms|0.00232ms
+Engine|Render|Iterations|Compile|Iterations|Compile&Render|Iterations
+------|------|----------|-------|----------|--------------|----------
+Handlebars.Core|0.92380ms|25000|1.04944ms|25000|0.00336ms|25000
+HandlebarsDotNet|0.75436ms|25000|0.74068ms|25000|0.00204ms|25000
+RazorLight|225.00000ms|1|12.00000ms|1|9.00000ms|1
 
 

@@ -10,6 +10,7 @@ namespace BenchmarkTemplateEngines.Runner
             // HINT: Add every engine here
             yield return new Engines.HandlebarsDotNet.TemplateEngine();
             yield return new Engines.HandlebarsCore.TemplateEngine();
+            yield return new Engines.RazorLight.TemplateEngine();
         }
     }
 }
